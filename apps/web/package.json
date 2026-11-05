@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.5.15",
     "@known/chain": "workspace:*",
     "@known/core": "workspace:*",
     "@known/memory": "workspace:*",

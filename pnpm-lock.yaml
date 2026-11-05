@@ -26,6 +26,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@electric-sql/pglite':
+        specifier: ^0.5.15
+        version: 0.5.15
       '@known/chain':
         specifier: workspace:*
         version: link:../../packages/chain
@@ -49,7 +52,7 @@ importers:
         version: 2.1.1
       drizzle-orm:
         specifier: ^0.36.0
-        version: 0.36.4(@opentelemetry/api@1.9.0)(@types/pg@8.23.1)(@types/react@18.3.31)(pg@8.23.1)(react@18.3.1)
+        version: 0.36.4(@electric-sql/pglite@0.5.15)(@opentelemetry/api@1.9.0)(@types/pg@8.23.1)(@types/react@18.3.31)(pg@8.23.1)(react@18.3.1)
       lucide-react:
         specifier: ^0.454.0
         version: 0.454.0(react@18.3.1)
@@ -207,6 +210,9 @@ packages:
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
+
+  '@electric-sql/pglite@0.5.15':
+    resolution: {integrity: sha512-ERZWgaRTxueGV4cvL1tfpAOzFCWTXoUtbCBqnf2FhHDVs/so9eAKaanvrwWF9Dntx7BYsmFQujVQ0/B4S8Mmiw==}
 
   '@emnapi/runtime@1.11.3':
     resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
@@ -2708,6 +2714,8 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
+  '@electric-sql/pglite@0.5.15': {}
+
   '@emnapi/runtime@1.11.3':
     dependencies:
       tslib: 2.9.1
@@ -3958,8 +3966,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.36.4(@opentelemetry/api@1.9.0)(@types/pg@8.23.1)(@types/react@18.3.31)(pg@8.23.1)(react@18.3.1):
+  drizzle-orm@0.36.4(@electric-sql/pglite@0.5.15)(@opentelemetry/api@1.9.0)(@types/pg@8.23.1)(@types/react@18.3.31)(pg@8.23.1)(react@18.3.1):
     optionalDependencies:
+      '@electric-sql/pglite': 0.5.15
       '@opentelemetry/api': 1.9.0
       '@types/pg': 8.23.1
       '@types/react': 18.3.31

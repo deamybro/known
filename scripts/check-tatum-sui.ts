@@ -1,32 +1,35 @@
 /**
  * Phase 0 Check: Tatum Sui Gateway
- * Tests querying latest checkpoint, address transactions, and digests via Tatum's Sui RPC.
+ * Tests querying latest checkpoint, address transactions, and digests via Tatum's Sui GraphQL gateway.
  */
 import { config } from "dotenv";
 config();
 
 const TATUM_API_KEY = process.env.TATUM_API_KEY;
-const TATUM_SUI_GATEWAY = process.env.TATUM_SUI_GATEWAY_URL || "https://sui-mainnet.gateway.tatum.io";
+const TATUM_SUI_GATEWAY = process.env.TATUM_SUI_GATEWAY_URL || "https://sui-mainnet.gateway.tatum.io/graphql";
 
 async function checkTatumSui() {
   console.log("=== Phase 0: Tatum Sui Gateway Verification ===");
 
   if (!TATUM_API_KEY) {
-    console.warn("⚠ TATUM_API_KEY is not set in environment. Skipping live network call.");
-    console.log("Endpoint verified from documentation: POST https://sui-mainnet.gateway.tatum.io");
-    console.log("Header: x-api-key: <key>");
+    console.warn("⚠ TATUM_API_KEY is not set in environment.");
     return;
   }
 
-  console.log(`Connecting to ${TATUM_SUI_GATEWAY}...`);
+  console.log(`Connecting to Tatum Sui GraphQL Gateway: ${TATUM_SUI_GATEWAY}...`);
 
-  // 1. Fetch latest checkpoint
-  const rpcBody = {
-    jsonrpc: "2.0",
-    id: 1,
-    method: "sui_getLatestCheckpointSequenceNumber",
-    params: [],
-  };
+  const query = `
+    query {
+      chainIdentifier
+      checkpoint {
+        sequenceNumber
+        timestamp
+        epoch {
+          epochId
+        }
+      }
+    }
+  `;
 
   const res = await fetch(TATUM_SUI_GATEWAY, {
     method: "POST",
@@ -35,7 +38,7 @@ async function checkTatumSui() {
       "accept": "application/json",
       "x-api-key": TATUM_API_KEY,
     },
-    body: JSON.stringify(rpcBody),
+    body: JSON.stringify({ query }),
   });
 
   if (!res.ok) {
@@ -45,8 +48,9 @@ async function checkTatumSui() {
   }
 
   const result = await res.json();
-  console.log("Latest Sui Checkpoint:", result?.result);
-  console.log("✓ Tatum Sui Gateway check complete");
+  console.log("Chain Identifier:", result?.data?.chainIdentifier);
+  console.log("Latest Checkpoint:", result?.data?.checkpoint);
+  console.log("✓ Tatum Sui Gateway check PASSED");
 }
 
 checkTatumSui().catch((err) => {

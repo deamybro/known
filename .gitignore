@@ -8,4 +8,5 @@ build/
 .env.*.local
 *.log
 .secrets/
+.data/
 .DS_Store

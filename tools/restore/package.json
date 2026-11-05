@@ -1,0 +1,12 @@
+{
+  "name": "@known/restore",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "restore": "./src/index.ts"
+  },
+  "dependencies": {
+    "@known/core": "workspace:*",
+    "@known/memory": "workspace:*"
+  }
+}

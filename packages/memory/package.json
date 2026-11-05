@@ -1,0 +1,16 @@
+{
+  "name": "@known/memory",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@known/core": "workspace:*",
+    "@mysten-incubation/memwal": "^0.1.13",
+    "@mysten/seal": "^1.5.3",
+    "@mysten/sui": "^2.39.0",
+    "@mysten/walrus": "^1.2.38",
+    "ai": "^4.1.0",
+    "zod": "^3.23.8"
+  }
+}

@@ -189,6 +189,19 @@ export default function CheckPage() {
             {result.explanation}
           </p>
 
+          {/* Walrus Memory Recall Context */}
+          {(result as any).memoryContext && (
+            <div className="p-3.5 bg-slate-950/80 border border-emerald-500/40 rounded-xl space-y-1.5 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Walrus Memory Recall Context</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                {(result as any).memoryContext}
+              </p>
+            </div>
+          )}
+
           {/* Lookalike character breakdown */}
           {result.imitates && (
             <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-xl space-y-2">

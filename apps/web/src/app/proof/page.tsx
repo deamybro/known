@@ -134,9 +134,25 @@ export default function ProofPage() {
 
           {/* Walrus Memories Log */}
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-              Walrus Memory Outbox Telemetry
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                Walrus Memory Outbox Telemetry
+              </h2>
+              <button
+                onClick={async () => {
+                  try {
+                    await fetch("/api/sync", { method: "POST" });
+                    await loadProof();
+                  } catch (err) {
+                    console.error("Sync failed:", err);
+                  }
+                }}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow"
+              >
+                <Server className="w-3.5 h-3.5" />
+                Sync Outbox to Walrus Now
+              </button>
+            </div>
             {data.memories.length === 0 ? (
               <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-xl text-center text-xs text-slate-500">
                 No memories queued yet. Confirm a payee from the Payees screen to write your first memory.

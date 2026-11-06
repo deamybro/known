@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import { alerts, blocklist, getDb, payees, transfers } from "@/db/index";
+import { alerts, blocklist, getDb, outbox, payees, transfers } from "@/db/index";
 import { getOrCreateCurrentUser } from "@/lib/user";
 import {
   BlocklistRecord,
   CheckAddressRequest,
   evaluateVerdict,
+  normalizeAddress,
   PayeeRecord,
   SupportedChain,
   TransferRecord,
 } from "@known/core";
+import { recallPayeeContext } from "@known/memory";
 import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
@@ -73,10 +75,26 @@ export async function POST(req: Request) {
       source: t.source,
     }));
 
-    // 4. Run deterministic security evaluation
+    // 4. Run deterministic security evaluation (Strictly pure code, no LLM / heuristics)
     const result = evaluateVerdict(body, confirmedPayees, userBlocklist, userTransfers);
 
-    // 5. If red alert, log in alerts table
+    // 5. Query Walrus Memory semantic recall for rich human-language context
+    let memorySummary: string | null = null;
+    try {
+      const recallQuery = result.matchedPayee?.label || result.imitates?.label || body.address;
+      const recallResult = await recallPayeeContext({
+        userId: user.id,
+        query: recallQuery,
+        limit: 3,
+      });
+      if (recallResult?.summary) {
+        memorySummary = recallResult.summary;
+      }
+    } catch {
+      // Memory recall is purely additive; failures must never block security checks
+    }
+
+    // 6. If lookalike caught (Red alert), record in alerts and queue memory
     if (result.verdict === "red") {
       try {
         await db.insert(alerts).values({
@@ -88,12 +106,59 @@ export async function POST(req: Request) {
           reasons: result.reasons,
           createdAt: new Date(),
         });
+
+        // If it's a caught lookalike, add to blocklist & outbox for Walrus memory persistence
+        if (result.imitates) {
+          const norm = normalizeAddress(body.chain, body.address);
+          const blockId = `blk_${Date.now()}`;
+          await db
+            .insert(blocklist)
+            .values({
+              id: blockId,
+              userId: user.id,
+              chain: body.chain,
+              address: body.address,
+              normalized: norm.normalized,
+              imitatesPayeeId: result.imitates.address,
+              reason: `Lookalike imitating ${result.imitates.label}`,
+              firstSeenAt: new Date(),
+            })
+            .onConflictDoNothing();
+
+          const memoryPayload = {
+            v: 1,
+            kind: "lookalike_caught",
+            userId: user.id,
+            chain: body.chain,
+            address: norm.normalized,
+            imitatesPayeeAddress: result.imitates.address,
+            imitatesLabel: result.imitates.label,
+            occurredAt: new Date().toISOString(),
+            summary: `Caught lookalike imitating ${result.imitates.label} on ${body.chain.toUpperCase()}.`,
+          };
+
+          await db
+            .insert(outbox)
+            .values({
+              id: `out_lookalike_${Date.now()}`,
+              userId: user.id,
+              namespace: `known:${user.id}:blocklist`,
+              content: JSON.stringify(memoryPayload),
+              status: "pending",
+              attempts: 0,
+              createdAt: new Date(),
+            })
+            .onConflictDoNothing();
+        }
       } catch (err) {
-        // Logging error shouldn't fail verdict
+        console.error("Alert / blocklist logging error:", err);
       }
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      ...result,
+      memoryContext: memorySummary,
+    });
   } catch (error: any) {
     console.error("Check error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

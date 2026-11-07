@@ -29,6 +29,28 @@ export interface IMemoryClient {
 
 let activeClient: IMemoryClient | null = null;
 
+function wrapMockWithList(mock: any): IMemoryClient {
+  mock.isMock = true;
+  if (!mock.listMemories) {
+    mock.listMemories = async (options?: { namespace?: string }) => {
+      const items = (mock.memories || []).filter(
+        (m: any) => !options?.namespace || m.namespace === options.namespace || m.namespace_id === options.namespace
+      );
+      return {
+        memories: items.map((m: any) => ({
+          text: m.text,
+          blob_id: m.blobId || m.blob_id || "blob_mock",
+          namespace_id: m.namespace || m.namespace_id,
+          timestamp: m.timestamp || Date.now(),
+        })),
+        deleted: [],
+        must_resync: false,
+      };
+    };
+  }
+  return mock;
+}
+
 export function createMemoryClient(config?: MemoryClientConfig): IMemoryClient {
   const serverUrl = config?.serverUrl || process.env.MEMWAL_RELAYER_URL || "https://relayer.memory.walrus.xyz";
   const key = config?.key || process.env.MEMWAL_PRIVATE_KEY;
@@ -38,8 +60,7 @@ export function createMemoryClient(config?: MemoryClientConfig): IMemoryClient {
   if (forceMock || !key || !accountId) {
     console.log("[Walrus Memory] Initializing with MemWalMock (in-memory mock mode).");
     const mock = MemWalMock.create() as any;
-    mock.isMock = true;
-    return mock;
+    return wrapMockWithList(mock);
   }
 
   try {
@@ -53,8 +74,7 @@ export function createMemoryClient(config?: MemoryClientConfig): IMemoryClient {
   } catch (err: any) {
     console.warn(`[Walrus Memory] Failed to initialize live MemWal client (${err.message}). Falling back to MemWalMock.`);
     const mock = MemWalMock.create() as any;
-    mock.isMock = true;
-    return mock;
+    return wrapMockWithList(mock);
   }
 }
 

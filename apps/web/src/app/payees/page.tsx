@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, CheckCircle, ShieldAlert, Sparkles, Tag, ArrowRight } from "lucide-react";
+import { Users, CheckCircle, ShieldAlert, Sparkles, Tag, ArrowRight, ShieldCheck, Database, Layers } from "lucide-react";
 import Link from "next/link";
 
 interface ConfirmedPayee {
@@ -98,147 +98,98 @@ export default function PayeesPage() {
 
   function formatTypicalRange(lowRaw: string, highRaw: string, decimals: number, symbol: string): string {
     try {
-      const low = Number(BigInt(lowRaw)) / 10 ** decimals;
-      const high = Number(BigInt(highRaw)) / 10 ** decimals;
-      if (low === 0 && high === 0) return `Any amount (${symbol})`;
-      return `${low.toLocaleString()} - ${high.toLocaleString()} ${symbol}`;
+      const low = (Number(BigInt(lowRaw)) / 10 ** decimals).toFixed(decimals > 2 ? 2 : 0);
+      const high = (Number(BigInt(highRaw)) / 10 ** decimals).toFixed(decimals > 2 ? 2 : 0);
+      return `${low} – ${high} ${symbol}`;
     } catch {
       return `~ ${symbol}`;
     }
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Users className="w-6 h-6 text-sky-400" />
-          Payee Memory Book
+    <div className="space-y-8 animate-fadeIn">
+      {/* Header */}
+      <div className="space-y-2 text-center sm:text-left">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/25 text-xs font-semibold text-sky-400">
+          <Users className="w-3.5 h-3.5" />
+          <span>Sovereign Payee Registry</span>
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          Confirmed Payees & Walrus Memory
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Known learns who you really pay from your actual outgoing transactions, stored in Walrus Memory.
+        <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+          Recipients you have explicitly trusted. Their cryptographic signatures and historical transfer patterns
+          are anchored directly into decentralized Walrus Memory.
         </p>
       </div>
 
-      {/* Suggested Payees Section */}
-      <div className="space-y-3">
+      {/* Confirmed Payees List */}
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Suggested Payees From Your History</span>
-            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs">
-              {suggestions.length}
-            </span>
+          <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
+            <span>Confirmed Payees ({confirmed.length})</span>
           </h2>
-          {totalTransfers === 0 && (
-            <Link
-              href="/wallets"
-              className="text-xs text-sky-400 hover:underline flex items-center gap-1"
-            >
-              <span>Import history first</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          )}
+          <span className="text-xs text-slate-400">Anchored in Walrus Blobs</span>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-slate-500 text-sm">Analyzing transaction history...</div>
-        ) : suggestions.length === 0 ? (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-6 text-center space-y-2">
-            <p className="text-slate-400 text-sm">No new suggested payees found.</p>
+          <div className="glass-card p-12 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-3 rounded-2xl">
+            <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+            <span>Loading confirmed payees from Walrus Memory...</span>
+          </div>
+        ) : confirmed.length === 0 ? (
+          <div className="glass-card p-12 text-center rounded-2xl space-y-3">
+            <Users className="w-8 h-8 text-slate-600 mx-auto" />
+            <p className="text-sm text-slate-400">No payees confirmed yet.</p>
             <p className="text-xs text-slate-500">
-              {totalTransfers === 0
-                ? "Go to the Wallets tab and click 'Import History' to let Known learn from your real transfers."
-                : "All outgoing counterparties are already confirmed."}
+              Import a wallet via Tatum in <Link href="/wallets" className="text-emerald-400 underline">Wallets</Link> to generate suggestions.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-2.5">
-            {suggestions.map((s, idx) => {
-              const isLookalike = !!s.isLookalikeOfConfirmed;
-
-              return (
-                <div
-                  key={idx}
-                  className={`bg-slate-900 border rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
-                    isLookalike ? "border-red-500/50 bg-red-950/20" : "border-slate-800"
-                  }`}
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-xs uppercase font-bold">
-                        {s.chain}
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        Paid <strong className="text-white">{s.sendCount} times</strong>
-                      </span>
-                      <span className="text-xs text-slate-500">
-                        Typically {formatTypicalRange(s.typicalLowRaw, s.typicalHighRaw, s.decimals, s.assetSymbol)}
-                      </span>
-                    </div>
-                    <div className="font-mono text-sm text-slate-200 break-all">{s.address}</div>
-
-                    {isLookalike && (
-                      <div className="text-xs text-red-400 flex items-center gap-1 font-medium">
-                        <ShieldAlert className="w-3.5 h-3.5" />
-                        <span>Warning: Imitates confirmed payee {s.isLookalikeOfConfirmed?.imitatesLabel}!</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setConfirmingPayee(s);
-                      setLabelInput("");
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition ${
-                      isLookalike
-                        ? "bg-red-900/60 hover:bg-red-800 text-red-200"
-                        : "bg-sky-600 hover:bg-sky-500 text-white"
-                    }`}
-                  >
-                    Confirm & Label
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Confirmed Payees Section */}
-      <div className="space-y-3 pt-4">
-        <h2 className="text-base font-semibold text-white flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-400" />
-          <span>Confirmed People You Pay</span>
-          <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs">
-            {confirmed.length}
-          </span>
-        </h2>
-
-        {confirmed.length === 0 ? (
-          <div className="bg-slate-900/30 border border-slate-800/80 rounded-xl p-6 text-center text-sm text-slate-500">
-            No confirmed payees yet. Confirm suggested payees above to populate your protected Walrus memory.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {confirmed.map((p) => (
               <div
                 key={p.id}
-                className="bg-slate-900 border border-emerald-950/40 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow"
+                className="glass-card rounded-2xl p-5 border border-white/[0.08] hover:border-emerald-500/40 transition group space-y-4"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-emerald-300">{p.label}</span>
-                    <span className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-xs uppercase font-bold">
-                      {p.chain}
-                    </span>
-                    <span className="text-xs text-slate-400">Paid {p.sendCount} times</span>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-sm">
+                      {p.label.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-sm group-hover:text-emerald-300 transition">
+                        {p.label}
+                      </h3>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 uppercase font-mono text-[9px] text-slate-300 font-bold">
+                          {p.chain}
+                        </span>
+                        <span>{p.sendCount} transfers</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="font-mono text-xs text-slate-300 break-all">{p.address}</div>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 pulse-beacon" />
                 </div>
 
-                <div className="text-xs text-emerald-400/80 bg-emerald-950/30 border border-emerald-800/30 px-2.5 py-1 rounded-md shrink-0">
-                  Protected in Walrus Memory
+                <div className="bg-[#060910] p-3 rounded-xl border border-white/5 font-mono text-xs text-slate-300 break-all select-all">
+                  {p.address}
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-white/5">
+                  <span>
+                    Typical:{" "}
+                    <strong className="text-slate-200">
+                      {p.typicalLowRaw && p.typicalHighRaw
+                        ? formatTypicalRange(p.typicalLowRaw, p.typicalHighRaw, p.decimals, p.assetSymbol)
+                        : `~ ${p.assetSymbol}`}
+                    </strong>
+                  </span>
+                  <span className="text-emerald-400 font-mono text-[10px] flex items-center gap-1">
+                    <Database className="w-3 h-3" />
+                    <span>Walrus Synced</span>
+                  </span>
                 </div>
               </div>
             ))}
@@ -246,52 +197,115 @@ export default function PayeesPage() {
         )}
       </div>
 
-      {/* Label Modal Dialog */}
-      {confirmingPayee && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Tag className="w-5 h-5 text-sky-400" />
-              Confirm & Name This Payee
-            </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Give this address a clear name you recognize (e.g. &quot;Ada, sister&quot; or &quot;Binance Deposit&quot;).
-              Known will remember this address in your Walrus Memory and protect against lookalikes.
-            </p>
+      {/* Suggested Payees from History */}
+      {suggestions.length > 0 && (
+        <div className="space-y-4 pt-4 border-t border-white/[0.08]">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-sky-400" />
+              <span>Suggested from Tatum Ingested History ({suggestions.length})</span>
+            </h2>
+            <span className="text-xs text-slate-400">Repeated outgoing recipients (Dust excluded)</span>
+          </div>
 
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg space-y-1">
-              <span className="text-xs text-slate-500 uppercase font-bold">{confirmingPayee.chain}</span>
-              <p className="font-mono text-xs text-slate-200 break-all">{confirmingPayee.address}</p>
+          <div className="space-y-3">
+            {suggestions.map((s, idx) => (
+              <div
+                key={idx}
+                className="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 uppercase font-mono text-[10px] text-slate-300 font-bold">
+                      {s.chain}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-200">
+                      {s.sendCount} outgoing transactions
+                    </span>
+                    {s.isLookalikeOfConfirmed && (
+                      <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-bold flex items-center gap-1">
+                        <ShieldAlert className="w-3 h-3" />
+                        <span>Imitates &ldquo;{s.isLookalikeOfConfirmed.imitatesLabel}&rdquo;</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="font-mono text-xs text-slate-400 truncate">
+                    {s.address}
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    Typical transfer size:{" "}
+                    <strong className="text-slate-300">
+                      {formatTypicalRange(s.typicalLowRaw, s.typicalHighRaw, s.decimals, s.assetSymbol)}
+                    </strong>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setConfirmingPayee(s);
+                    setLabelInput("");
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-bold transition flex items-center gap-2 shrink-0 self-start sm:self-center"
+                >
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>Label & Anchor in Walrus</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Label Modal */}
+      {confirmingPayee && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="glass-card rounded-[28px] p-6 max-w-md w-full border border-white/10 space-y-5 shadow-2xl">
+            <div>
+              <h3 className="text-lg font-black text-white">Confirm Sovereign Payee</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Give this recipient a recognizable name. It will be signed and synced to Walrus Memory.
+              </p>
             </div>
 
             <form onSubmit={handleConfirmSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Payee Name / Label</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Recipient Address ({confirmingPayee.chain.toUpperCase()})
+                </label>
+                <div className="p-3 bg-[#060910] rounded-xl border border-white/10 font-mono text-xs text-slate-300 break-all">
+                  {confirmingPayee.address}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Payee Label (e.g. &ldquo;Ada Sister&rdquo;, &ldquo;Landlord Rent&rdquo;)
+                </label>
                 <input
                   type="text"
-                  autoFocus
                   required
-                  placeholder="e.g. Ada, my sister"
+                  placeholder="Enter friendly label"
                   value={labelInput}
                   onChange={(e) => setLabelInput(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500"
+                  className="w-full bg-[#060910] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition shadow-inner"
+                  autoFocus
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setConfirmingPayee(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
+                  className="flex-1 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-300 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || !labelInput.trim()}
-                  className="bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-semibold px-4 py-2 rounded-lg text-xs transition"
+                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black transition disabled:opacity-50"
                 >
-                  {submitting ? "Saving to Memory..." : "Save to Walrus Memory"}
+                  {submitting ? "Anchoring..." : "Save to Walrus"}
                 </button>
               </div>
             </form>

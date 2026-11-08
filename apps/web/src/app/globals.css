@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #050811;
-  --foreground: #f1f5f9;
+  --background: #030712;
+  --foreground: #f8fafc;
+  --walrus-mint: #00f5d4;
+  --walrus-teal: #14b8a6;
+  --walrus-cyan: #38bdf8;
+  --walrus-navy: #070e1e;
 }
 
 * {
@@ -13,13 +17,18 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+  background: #030712;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 245, 212, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(13, 148, 136, 0.08) 0px, transparent 60%);
+  background-attachment: fixed;
 }
 
-/* CRITICAL: Force cursor pointer on all interactive elements */
+/* Force cursor pointer on all interactive elements */
 button, 
 a, 
 select, 
@@ -34,103 +43,78 @@ button:disabled {
   cursor: not-allowed !important;
 }
 
-/* Luxury Glassmorphic Surfaces */
-.glass-surface {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(8, 12, 24, 0.85) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-.glass-card {
-  background: rgba(13, 19, 33, 0.8);
+/* Walrus Oceanic Glass Surfaces */
+.walrus-card {
+  background: linear-gradient(145deg, rgba(10, 20, 40, 0.8) 0%, rgba(5, 12, 26, 0.9) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 245, 212, 0.15);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+.walrus-card:hover {
+  border-color: rgba(0, 245, 212, 0.35);
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 30px -5px rgba(0, 245, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.glass-panel {
-  background: rgba(8, 12, 22, 0.7);
+.walrus-panel {
+  background: rgba(6, 14, 30, 0.7);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
 }
 
-/* Neon Verdict Glows */
-.glow-emerald {
-  box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(16, 185, 129, 0.3);
-  border-color: rgba(16, 185, 129, 0.5) !important;
+/* Glowing Neon Borders & Badges */
+.glow-mint {
+  box-shadow: 0 0 45px -8px rgba(0, 245, 212, 0.4), inset 0 1px 0 rgba(0, 245, 212, 0.3);
+  border-color: rgba(0, 245, 212, 0.5) !important;
 }
 
-.glow-rose, .glow-red {
-  box-shadow: 0 0 50px -10px rgba(244, 63, 94, 0.45), inset 0 1px 0 rgba(244, 63, 94, 0.35);
-  border-color: rgba(244, 63, 94, 0.6) !important;
+.glow-crimson {
+  box-shadow: 0 0 50px -8px rgba(255, 51, 102, 0.45), inset 0 1px 0 rgba(255, 51, 102, 0.35);
+  border-color: rgba(255, 51, 102, 0.6) !important;
 }
 
 .glow-amber {
-  box-shadow: 0 0 50px -10px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 45px -8px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(245, 158, 11, 0.3);
   border-color: rgba(245, 158, 11, 0.5) !important;
 }
 
-.glow-sky {
-  box-shadow: 0 0 45px -10px rgba(56, 189, 248, 0.35);
-  border-color: rgba(56, 189, 248, 0.4) !important;
+/* Primary Action Button (Walrus Gradient) */
+.btn-walrus-primary {
+  background: linear-gradient(135deg, #00f5d4 0%, #0d9488 100%);
+  color: #030712;
+  font-weight: 800;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 245, 212, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
 }
 
-/* Background Atmosphere */
-.bg-mesh {
-  background-image: 
-    radial-gradient(at 15% 15%, rgba(16, 185, 129, 0.14) 0px, transparent 55%),
-    radial-gradient(at 85% 15%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-    radial-gradient(at 50% 90%, rgba(168, 85, 247, 0.08) 0px, transparent 60%);
+.btn-walrus-primary:hover {
+  box-shadow: 0 0 40px rgba(0, 245, 212, 0.65);
+  transform: translateY(-1px);
 }
 
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+.btn-walrus-primary:active {
+  transform: scale(0.98);
 }
 
 /* Pulse Beacon */
 @keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+  0% { transform: scale(0.95); opacity: 0.85; }
+  50% { transform: scale(1.2); opacity: 0.3; }
+  100% { transform: scale(0.95); opacity: 0.85; }
 }
 
 .pulse-beacon {
   animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }
 
-/* Radar Sweep Animation */
-@keyframes radar-sweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.animate-radar {
-  animation: radar-sweep 4s linear infinite;
-}
-
-/* Custom Sleek Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #050811;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.4);
+/* Subtle Grid Texture */
+.bg-grid-walrus {
+  background-image: radial-gradient(rgba(0, 245, 212, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
 }

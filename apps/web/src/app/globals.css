@@ -3,12 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #030712;
+  --background: #040509;
   --foreground: #f8fafc;
-  --walrus-mint: #00f5d4;
-  --walrus-teal: #14b8a6;
-  --walrus-cyan: #38bdf8;
-  --walrus-navy: #070e1e;
 }
 
 * {
@@ -17,18 +13,18 @@
 
 body {
   color: var(--foreground);
-  background: #030712;
+  background-color: #040509;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 245, 212, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(13, 148, 136, 0.08) 0px, transparent 60%);
+    radial-gradient(circle at 68% 18%, rgba(79, 70, 229, 0.28) 0%, rgba(55, 48, 163, 0.16) 28%, rgba(15, 23, 42, 0.05) 55%, transparent 75%),
+    radial-gradient(circle at 25% 75%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 0%, rgba(30, 27, 75, 0.4) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
-/* Force cursor pointer on all interactive elements */
+/* Force pointer cursors on all interactive elements */
 button, 
 a, 
 select, 
@@ -43,78 +39,208 @@ button:disabled {
   cursor: not-allowed !important;
 }
 
-/* Walrus Oceanic Glass Surfaces */
-.walrus-card {
-  background: linear-gradient(145deg, rgba(10, 20, 40, 0.8) 0%, rgba(5, 12, 26, 0.9) 100%);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 245, 212, 0.15);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.walrus-card:hover {
-  border-color: rgba(0, 245, 212, 0.35);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 30px -5px rgba(0, 245, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.walrus-panel {
-  background: rgba(6, 14, 30, 0.7);
-  backdrop-filter: blur(16px);
+/* Walrus Memory Terminal Card */
+.card-terminal {
+  background: #080a11;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
+  box-shadow: 
+    0 35px 80px -20px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
 }
 
-/* Glowing Neon Borders & Badges */
-.glow-mint {
-  box-shadow: 0 0 45px -8px rgba(0, 245, 212, 0.4), inset 0 1px 0 rgba(0, 245, 212, 0.3);
-  border-color: rgba(0, 245, 212, 0.5) !important;
+.card-terminal-sub {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 
-.glow-crimson {
-  box-shadow: 0 0 50px -8px rgba(255, 51, 102, 0.45), inset 0 1px 0 rgba(255, 51, 102, 0.35);
-  border-color: rgba(255, 51, 102, 0.6) !important;
+.card-terminal-sub:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-.glow-amber {
-  box-shadow: 0 0 45px -8px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(245, 158, 11, 0.3);
-  border-color: rgba(245, 158, 11, 0.5) !important;
+.card-terminal-sub.active {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Primary Action Button (Walrus Gradient) */
-.btn-walrus-primary {
-  background: linear-gradient(135deg, #00f5d4 0%, #0d9488 100%);
-  color: #030712;
-  font-weight: 800;
-  border-radius: 16px;
-  box-shadow: 0 0 25px rgba(0, 245, 212, 0.4);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  border: none;
+/* Floating 3D Refractive Glass Tiles */
+@keyframes float-gem-1 {
+  0%, 100% {
+    transform: perspective(800px) rotateY(-22deg) rotateX(18deg) rotateZ(12deg) translateY(0px);
+  }
+  50% {
+    transform: perspective(800px) rotateY(-18deg) rotateX(22deg) rotateZ(10deg) translateY(-10px);
+  }
 }
 
-.btn-walrus-primary:hover {
-  box-shadow: 0 0 40px rgba(0, 245, 212, 0.65);
-  transform: translateY(-1px);
+@keyframes float-gem-2 {
+  0%, 100% {
+    transform: perspective(800px) rotateY(18deg) rotateX(25deg) rotateZ(-15deg) translateY(0px);
+  }
+  50% {
+    transform: perspective(800px) rotateY(22deg) rotateX(20deg) rotateZ(-12deg) translateY(-12px);
+  }
 }
 
-.btn-walrus-primary:active {
-  transform: scale(0.98);
+@keyframes float-gem-3 {
+  0%, 100% {
+    transform: perspective(600px) rotateY(30deg) rotateX(15deg) translateY(0px);
+  }
+  50% {
+    transform: perspective(600px) rotateY(35deg) rotateX(20deg) translateY(-8px);
+  }
 }
 
-/* Pulse Beacon */
-@keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.85; }
-  50% { transform: scale(1.2); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.85; }
+.glass-gem-1 {
+  width: 95px;
+  height: 95px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(99, 102, 241, 0.12) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.85),
+    inset 0 2px 2px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(168, 85, 247, 0.3);
+  animation: float-gem-1 7s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.pulse-beacon {
-  animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+.glass-gem-2 {
+  width: 105px;
+  height: 105px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.25) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(56, 189, 248, 0.18) 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.9),
+    inset 0 2px 2px rgba(255, 255, 255, 0.7),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+    0 0 35px rgba(45, 212, 191, 0.35);
+  animation: float-gem-2 8s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Subtle Grid Texture */
-.bg-grid-walrus {
-  background-image: radial-gradient(rgba(0, 245, 212, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+.gem-inner-diamond {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  transform: rotate(45deg);
+  border-radius: 6px;
+  box-shadow: 
+    0 0 16px rgba(255, 255, 255, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.wireframe-cube {
+  animation: float-gem-3 9s ease-in-out infinite;
+}
+
+/* Minimalist Walrus-Style Pill Buttons */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.38);
+  transform: translateY(-1.5px);
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.08);
+}
+
+.btn-pill-primary {
+  background: #ffffff;
+  color: #060810;
+  border-color: #ffffff;
+  font-weight: 700;
+}
+
+.btn-pill-primary:hover {
+  background: #f1f5f9;
+  border-color: #f1f5f9;
+  color: #000000;
+  box-shadow: 0 12px 30px -5px rgba(255, 255, 255, 0.25);
+}
+
+/* Sub-pill badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #94a3b8;
+}
+
+.badge-pill:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.badge-pill.active {
+  background: #ffffff;
+  color: #060810;
+  border-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+}
+
+/* Status indicator pulse */
+@keyframes beacon-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.85); }
+}
+
+.beacon-dot {
+  animation: beacon-pulse 2s infinite ease-in-out;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #040509;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }

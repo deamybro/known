@@ -130,8 +130,8 @@ WALRUS/
 
 ### 1. Installation
 ```bash
-git clone https://github.com/Stella112/WALRUS.git
-cd WALRUS
+git clone https://github.com/deamybro/known.git
+cd known
 pnpm install
 ```
 

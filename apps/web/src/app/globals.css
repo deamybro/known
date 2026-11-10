@@ -68,6 +68,37 @@ button:disabled {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
+/* Glass card and panels matching mature dark theme */
+.glass-card, .walrus-card {
+  background: #080a12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.walrus-panel {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+}
+
+.pulse-beacon {
+  animation: beacon-pulse 2s infinite ease-in-out;
+}
+
+.glow-emerald {
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glow-purple {
+  box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 /* Floating 3D Refractive Glass Tiles */
 @keyframes float-gem-1 {
   0%, 100% {

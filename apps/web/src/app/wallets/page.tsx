@@ -147,6 +147,29 @@ export default function WalletsPage() {
                 onChange={(e) => setAddress(e.target.value)}
                 className="w-full bg-[#060910] border border-white/10 rounded-xl px-3.5 py-3 text-xs font-mono text-white focus:outline-none focus:border-indigo-500 transition shadow-inner placeholder:text-slate-600"
               />
+              <div className="flex items-center gap-2 pt-2 text-[11px] text-slate-400">
+                <span>Quick Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChain("sui");
+                    setAddress("0x2c10b784e27f00223f05d5c077b966f3660a920215ff0a6f059cbffc841103c8");
+                  }}
+                  className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 hover:border-white/30 text-[10px] text-slate-300 transition"
+                >
+                  Demo Sui Wallet
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChain("ethereum");
+                    setAddress("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
+                  }}
+                  className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 hover:border-white/30 text-[10px] text-slate-300 transition"
+                >
+                  vitalik.eth (Ethereum)
+                </button>
+              </div>
             </div>
           </div>
 
